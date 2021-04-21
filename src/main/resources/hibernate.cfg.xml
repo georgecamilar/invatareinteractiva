@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <hibernate-configuration xmlns="http://www.hibernate.org/xsd/hibernate-configuration">
     <session-factory>
-        <property name="connection.driver_class">com.mysql.</property>
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost:8889/invatareinteractivadb</property>
+        <property name="connection.username">username</property>
+        <property name="connection.password">password</property>
+        <property name="show_sql">true</property>
     </session-factory>
 </hibernate-configuration>

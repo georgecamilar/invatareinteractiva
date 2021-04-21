@@ -1,6 +1,6 @@
-package com.persistance;
+package app.persistance;
 
-import com.entities.User;
+import app.entities.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
