@@ -13,6 +13,7 @@ import java.util.function.BiPredicate;
 import java.util.stream.StreamSupport;
 
 @RestController
+@CrossOrigin(origins = "http://locahost:8080/")
 @RequestMapping(path = "/app")
 public class MappingController {
     private static final Logger logger = LoggerFactory.getLogger(MappingController.class);
