@@ -47,7 +47,7 @@ public class ScoreMappingsController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/rankings/getAll")
+    @RequestMapping(method = RequestMethod.POST, path = "/rankings/")
     public ResponseEntity<?> registerScore(@RequestBody final Map<String, Object> requestBody) {
         try {
             if (requestBody.containsKey("score") && requestBody.containsKey("user")) {
