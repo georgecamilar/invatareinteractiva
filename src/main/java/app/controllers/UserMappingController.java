@@ -16,11 +16,12 @@ import java.util.function.BiPredicate;
 import java.util.stream.StreamSupport;
 
 @RestController
-@CrossOrigin(origins = "http://locahost:8080/")
-@RequestMapping(path = "/app")
-public class MappingController {
-    private static final Logger logger = LoggerFactory.getLogger(MappingController.class);
+@CrossOrigin(origins = "https://locahost:8080/")
+@RequestMapping(path = "/app/users")
+public class UserMappingController {
+    private static final Logger logger = LoggerFactory.getLogger(UserMappingController.class);
     private final List<User> loggedIn = new ArrayList<>();
+
     @Autowired
     private Services services;
 
@@ -31,14 +32,14 @@ public class MappingController {
 
     @RequestMapping(path = "/user/config/add", method = RequestMethod.POST)
     public void saveUser(@RequestBody User user) {
-        services.add(user);
+        services.getUserRepository().save(user);
     }
 
     @RequestMapping(path = "/user/config/{id}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getUser(@PathVariable String id) {
         try {
             final Integer givenId = Integer.parseInt(id);
-            return new ResponseEntity<>(services.get(givenId), HttpStatus.OK);
+            return new ResponseEntity<>(services.getUserRepository().findById(givenId), HttpStatus.OK);
         } catch (NumberFormatException ex) {
             logger.error(ex.getMessage());
             logger.error("{} is not a number", id);
@@ -51,10 +52,12 @@ public class MappingController {
         if (loggedIn.contains(user)) {
             return new ResponseEntity<>("Logged in already", HttpStatus.PERMANENT_REDIRECT);
         }
-        if (StreamSupport.stream(services.getAll().spliterator(), false)
+        if (StreamSupport.stream(services.getUserRepository().findAll().spliterator(), false)
                 .filter(el -> userComparator.test(el, user))
-                .count() == 1)
+                .count() == 1) {
+            this.loggedIn.add(user);
             return ResponseEntity.status(200).build();
+        }
         return ResponseEntity.status(403).build();
     }
 
@@ -64,7 +67,7 @@ public class MappingController {
             if (body.containsKey("username") && body.containsKey("password")) {
                 final String username = body.get("username").toString();
                 final String password = body.get("password").toString();
-                final long count = StreamSupport.stream(services.getAll().spliterator(), false)
+                final long count = StreamSupport.stream(services.getUserRepository().findAll().spliterator(), false)
                         .filter(el -> el.getUsername().equals(username))
                         .filter(el -> el.getPassword().equals(password))
                         .count();
@@ -74,7 +77,7 @@ public class MappingController {
                 final User user = new User();
                 user.setUsername(username);
                 user.setPassword(password);
-                services.add(user);
+                services.getUserRepository().save(user);
                 return new ResponseEntity<>(HttpStatus.PERMANENT_REDIRECT);
             }
             return new ResponseEntity<>("Cannot register this user", HttpStatus.NOT_ACCEPTABLE);

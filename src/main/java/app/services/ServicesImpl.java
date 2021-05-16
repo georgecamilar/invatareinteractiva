@@ -1,6 +1,7 @@
 package app.services;
 
 import app.entities.User;
+import app.persistance.ScoreRepository;
 import app.persistance.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,20 +9,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServicesImpl implements Services {
     @Autowired
-    private UserRepository repository;
+    private UserRepository userRepository;
 
-    @Override
-    public User add(User user) {
-        return repository.save(user);
+    @Autowired
+    private ScoreRepository scoreRepository;
+
+    public UserRepository getUserRepository() {
+        return userRepository;
     }
 
-    @Override
-    public User get(Integer id) {
-        return repository.findById(id).orElse(null);
-    }
-
-    @Override
-    public Iterable<User> getAll() {
-        return repository.findAll();
+    public ScoreRepository getScoreRepository() {
+        return scoreRepository;
     }
 }

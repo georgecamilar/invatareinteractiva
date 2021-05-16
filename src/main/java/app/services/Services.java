@@ -1,11 +1,13 @@
 package app.services;
 
 import app.entities.User;
+import app.persistance.ScoreRepository;
+import app.persistance.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface Services {
-    User add(final User user);
-    User get(final Integer id);
-    Iterable<User> getAll();
+    UserRepository getUserRepository();
+
+    ScoreRepository getScoreRepository();
 }
