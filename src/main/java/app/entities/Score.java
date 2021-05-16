@@ -1,15 +1,13 @@
 package app.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "Score")
 public class Score {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer scoreId;
     private Integer score;
     @OneToOne

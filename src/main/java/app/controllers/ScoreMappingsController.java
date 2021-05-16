@@ -51,7 +51,12 @@ public class ScoreMappingsController {
     public ResponseEntity<?> registerScore(@RequestBody final Map<String, Object> requestBody) {
         try {
             if (requestBody.containsKey("score") && requestBody.containsKey("user")) {
-                final Integer score = (Integer) requestBody.get("score");
+                final Integer grade = (Integer) requestBody.get("score");
+                final User user = (User) requestBody.get("user");
+                final Score score = new Score();
+                score.setScore(grade);
+                score.setUser(user);
+                services.getScoreRepository().save(score);
             }
             return new ResponseEntity<>("score and user need to be present in the value map", HttpStatus.NOT_ACCEPTABLE);
         } catch (Exception ex) {
