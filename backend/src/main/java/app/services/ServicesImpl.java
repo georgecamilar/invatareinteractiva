@@ -1,10 +1,7 @@
 package app.services;
 
 import app.entities.User;
-import app.persistance.ChapterRepository;
-import app.persistance.QuestionRepository;
-import app.persistance.ScoreRepository;
-import app.persistance.UserRepository;
+import app.persistance.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +18,9 @@ public class ServicesImpl implements Services {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @Override
     public UserRepository getUserRepository() {
@@ -40,5 +40,9 @@ public class ServicesImpl implements Services {
     @Override
     public QuestionRepository getQuestionRepository() {
         return questionRepository;
+    }
+
+    public AnswerRepository getAnswerRepository() {
+        return answerRepository;
     }
 }
