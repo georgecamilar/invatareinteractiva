@@ -63,23 +63,51 @@ public class QuestionsMappingController {
             quiz.put(question.getText(),
                     StreamSupport.stream(services.getAnswerRepository().findAll().spliterator(), false)
                             .filter(el -> el.getQuestion().equals(question)).collect(Collectors.toList()));
-            if (quiz.get(question.getText()) == null || quiz.get(question.getText()).size() < 4) {
-                /* TODO To be removed - just as example */
-                addRandomAnswers(question, quiz.get(question.getText()));
-            }
+
         }
-        return new ResponseEntity<>(quiz, HttpStatus.OK);
+        final List<QuestionDto> toSend = new ArrayList<>();
+        for (final String key : quiz.keySet()) {
+            final List<Answer> validAnswers = quiz.get(key).stream().filter(Answer::isStatus).collect(Collectors.toList());
+            final String[] answers = quiz.get(key).stream().map(Answer::getText).toArray(String[]::new);
+            toSend.add(new QuestionDto(key, answers, validAnswers.get(0).getText()));
+        }
+        return new ResponseEntity<>(toSend, HttpStatus.OK);
     }
 
-    public void addRandomAnswers(final Question question, final List<Answer> answers) {
-        int i = 0;
-        while (answers.size() < 4) {
-            final Answer answer = new Answer();
-            answer.setQuestion(question);
-            answer.setStatus(false);
-            answer.setText("answer" + i);
-            answers.add(answer);
-            i++;
+
+    static class QuestionDto {
+        private String questionText;
+        private String[] answers;
+        private String correctAnswer;
+
+        public QuestionDto(String questionText, String[] answers, String correctAnswer) {
+            this.questionText = questionText;
+            this.answers = answers;
+            this.correctAnswer = correctAnswer;
+        }
+
+        public String getQuestionText() {
+            return questionText;
+        }
+
+        public void setQuestionText(String questionText) {
+            this.questionText = questionText;
+        }
+
+        public String[] getAnswers() {
+            return answers;
+        }
+
+        public void setAnswers(String[] answers) {
+            this.answers = answers;
+        }
+
+        public String getCorrectAnswer() {
+            return correctAnswer;
+        }
+
+        public void setCorrectAnswer(String correctAnswer) {
+            this.correctAnswer = correctAnswer;
         }
     }
 }
