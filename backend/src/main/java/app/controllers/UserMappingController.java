@@ -16,7 +16,7 @@ import java.util.function.BiPredicate;
 import java.util.stream.StreamSupport;
 
 @RestController
-@CrossOrigin(origins = "https://locahost:8080/")
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(path = "/app/users")
 public class UserMappingController {
     private static final Logger logger = LoggerFactory.getLogger(UserMappingController.class);

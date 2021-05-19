@@ -12,6 +12,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/chapter")
+@CrossOrigin(origins = "http://localhost:4200/")
 public class ChapterMappingsController {
 
     @Autowired

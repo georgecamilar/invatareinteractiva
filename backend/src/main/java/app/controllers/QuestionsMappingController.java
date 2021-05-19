@@ -17,6 +17,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/questions")
+@CrossOrigin(origins = "http://localhost:4200")
 public class QuestionsMappingController {
 
     @Autowired
