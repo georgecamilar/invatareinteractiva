@@ -2,6 +2,7 @@ package app.services;
 
 import app.entities.User;
 import app.persistance.ChapterRepository;
+import app.persistance.QuestionRepository;
 import app.persistance.ScoreRepository;
 import app.persistance.UserRepository;
 import org.springframework.stereotype.Service;
@@ -13,4 +14,7 @@ public interface Services {
     ScoreRepository getScoreRepository();
 
     ChapterRepository getChapterRepository();
+
+    QuestionRepository getQuestionRepository();
+
 }
