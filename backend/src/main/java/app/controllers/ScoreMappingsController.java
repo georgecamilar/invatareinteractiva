@@ -13,17 +13,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(path = "/rankings")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ScoreMappingsController {
     private static final Logger logger = LoggerFactory.getLogger(ScoreMappingsController.class);
     @Autowired
     private Services services;
 
-    @RequestMapping(method = RequestMethod.GET, path = "/rankings/getAll/{order}")
+    @RequestMapping(method = RequestMethod.GET, path = "/getAll/{order}")
     public ResponseEntity<?> getAllRankingsInSpecifiedOrderByScore(@PathVariable String order) {
         try {
             final Iterable<Score> all = services.getScoreRepository().findAll();
@@ -47,21 +49,50 @@ public class ScoreMappingsController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/rankings/")
-    public ResponseEntity<?> registerScore(@RequestBody final Map<String, Object> requestBody) {
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<?> registerScore(@RequestBody final ScoreTransferDto transfer) {
         try {
-            if (requestBody.containsKey("score") && requestBody.containsKey("user")) {
-                final Integer grade = (Integer) requestBody.get("score");
-                final User user = (User) requestBody.get("user");
-                final Score score = new Score();
-                score.setScore(grade);
-                score.setUser(user);
-                services.getScoreRepository().save(score);
+
+            var scoreOptional = StreamSupport.stream(services.getScoreRepository().findAll().spliterator(),false)
+                    .filter(score1 -> score1.getUser().getUsername().equals(transfer.user.getUsername())).findFirst();
+
+            if (scoreOptional.isPresent()){
+                final Score score1 = scoreOptional.get();
+                score1.setScore(score1.getScore()+ transfer.score);
+                services.getScoreRepository().save(score1);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
-            return new ResponseEntity<>("score and user need to be present in the value map", HttpStatus.NOT_ACCEPTABLE);
+            else {
+                final Score score = new Score();
+                score.setScore(transfer.score);
+                final Optional<User> first = StreamSupport.stream(services.getUserRepository().findAll().spliterator(), false)
+                        .filter(el -> el.getUsername().equals(transfer.user.getUsername()))
+                        .filter(el -> el.getPassword().equals(transfer.user.getPassword()))
+                        .findFirst();
+                first.ifPresent(score::setUser);
+                services.getScoreRepository().save(score);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
         } catch (Exception ex) {
             logger.error("registerScore -> failed with error: {}", ex.getMessage());
         }
-        return new ResponseEntity<>("", HttpStatus.OK);
+        return new ResponseEntity<>("Can't register score", HttpStatus.BAD_REQUEST);
+    }
+
+    static class ScoreTransferDto {
+        private Integer score;
+        private User user;
+        public Integer getScore() {
+            return score;
+        }
+        public void setScore(Integer score) {
+            this.score = score;
+        }
+        public User getUser() {
+            return user;
+        }
+        public void setUser(User user) {
+            this.user = user;
+        }
     }
 }
