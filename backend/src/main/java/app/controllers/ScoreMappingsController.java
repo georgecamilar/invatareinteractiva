@@ -52,7 +52,7 @@ public class ScoreMappingsController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> registerScore(@RequestBody final ScoreTransferDto transfer) {
         try {
-
+            System.out.println(transfer.toString());
             var scoreOptional = StreamSupport.stream(services.getScoreRepository().findAll().spliterator(),false)
                     .filter(score1 -> score1.getUser().getUsername().equals(transfer.user.getUsername())).findFirst();
 
@@ -79,6 +79,7 @@ public class ScoreMappingsController {
         return new ResponseEntity<>("Can't register score", HttpStatus.BAD_REQUEST);
     }
 
+
     static class ScoreTransferDto {
         private Integer score;
         private User user;
@@ -93,6 +94,14 @@ public class ScoreMappingsController {
         }
         public void setUser(User user) {
             this.user = user;
+        }
+
+        @Override
+        public String toString() {
+            return "ScoreTransferDto{" +
+                    "score=" + score +
+                    ", user=" + user +
+                    '}';
         }
     }
 }

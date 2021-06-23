@@ -56,7 +56,7 @@ public class UserMappingController {
                 .filter(el -> userComparator.test(el, user))
                 .count() == 1) {
             this.loggedIn.add(user);
-            return ResponseEntity.status(200).build();
+            return ResponseEntity.ok(user);
         }
         return ResponseEntity.status(403).build();
     }

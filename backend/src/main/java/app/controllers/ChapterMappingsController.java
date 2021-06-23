@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @RestController
-@RequestMapping(path = "/chapter")
-@CrossOrigin(origins = "http://localhost:4200/")
+@RequestMapping(path = "/chapters")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ChapterMappingsController {
 
     @Autowired
@@ -22,7 +22,6 @@ public class ChapterMappingsController {
     public ResponseEntity<?> getAllChapter() {
         try {
             return new ResponseEntity<>(StreamSupport.stream(services.getChapterRepository().findAll().spliterator(), false)
-                    .map(Chapter::getTitle)
                     .collect(Collectors.toList()), HttpStatus.OK);
 
         } catch (Exception exception) {

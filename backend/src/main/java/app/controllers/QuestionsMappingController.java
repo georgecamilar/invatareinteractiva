@@ -40,6 +40,7 @@ public class QuestionsMappingController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/byName/{name}")
     public ResponseEntity<?> getQuestionsFromChapterByName(@PathVariable String name) {
+        System.out.println("name: "+name);
         try {
             return new ResponseEntity<>(
                     StreamSupport
@@ -53,12 +54,12 @@ public class QuestionsMappingController {
         }
     }
 
-    @GetMapping(path = "/{name}")
-    public ResponseEntity<?> getQuestionsWithMapAnswerFromChapter(@PathVariable final String name) {
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> getQuestionsWithMapAnswerFromChapter(@PathVariable final Integer id) {
         final Map<String, List<Answer>> quiz = new LinkedHashMap<>();
         final List<Question> questions = StreamSupport
                 .stream(services.getQuestionRepository().findAll().spliterator(), false)
-                .filter(el -> el.getChapter().getTitle().equals(name))
+                .filter(el -> el.getChapter().getChapterId().equals(id))
                 .collect(Collectors.toList());
         for (Question question : questions) {
             quiz.put(question.getText(),
